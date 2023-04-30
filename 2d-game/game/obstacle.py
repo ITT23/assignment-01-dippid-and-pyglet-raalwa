@@ -3,7 +3,7 @@ import random
 
 
 class Obstacle():
-    def __init__(self, x_position: int, speed: int = 10, y_position: int = 0):
+    def __init__(self, x_position: int, speed: int, y_position: int = 0):
         image = pyglet.resource.image('resources/obstacle.png')
         self.obstacle = pyglet.sprite.Sprite(
             img=image, x=x_position, y=y_position)
