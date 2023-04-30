@@ -9,28 +9,34 @@ window = pyglet.window.Window(
     height=constants.WINDOW_HEIGHT)
 background_image = pyglet.resource.image('resources/background.png')
 
-def init():
-    global this_player, this_obstacle, score, score_display, background
 
-    this_player = player.Player(
-        x_position=constants.PLAYER_STARTING_POINT,
-        radius=constants.PLAYER_RADIUS,
-        color=constants.PLAYER_COLOR)
-    
-    this_obstacle = obstacle.Obstacle(
-        x_position=constants.WINDOW_WIDTH,
-        height=100,
-        width=constants.OBSTACLE_WIDTH,
-        color=constants.OBSTACLE_COLOR)
-    
+def init():
+    global this_player, this_obstacle, score, score_display, background, game_over_display
+
+    this_player = player.Player(x_position=constants.PLAYER_STARTING_POINT)
+
+    this_obstacle = obstacle.Obstacle(x_position=constants.WINDOW_WIDTH)
+
     score = this_obstacle.score
 
     score_display = pyglet.text.Label(text=f"Score: {score}",
                                       font_size=25,
                                       x=10,
-                                      y=constants.WINDOW_HEIGHT-50)
-    
+                                      y=constants.WINDOW_HEIGHT-50,
+                                      color=constants.TEXT_COLOR)
+
+    game_over_display = pyglet.text.Label(text="",
+                                          font_size=20,
+                                          anchor_x='center',
+                                          x=int(constants.WINDOW_WIDTH/2),
+                                          y=int(constants.WINDOW_HEIGHT/2),
+                                          multiline=True,
+                                          width=325,
+                                          align='center',
+                                          color=constants.TEXT_COLOR)
+
     background = pyglet.sprite.Sprite(img=background_image)
+
 
 def handle_input():
     if sensor.has_capability('gyroscope'):
@@ -41,21 +47,29 @@ def handle_input():
 
 def check_colission():
     obstacle_x = this_obstacle.obstacle.x + this_obstacle.obstacle.width/2
-    player_y = this_player.player.y - this_player.player.radius
-    x_distance = abs(constants.PLAYER_STARTING_POINT - obstacle_x)
+    player_x = constants.PLAYER_STARTING_POINT + this_player.player.width/2
+    # player_y = this_player.player.y - this_player.player.radius
+    x_distance = abs(player_x - obstacle_x)
 
-    return False
-    return x_distance <= (this_player.player.radius + this_obstacle.obstacle.width/2) and player_y <= this_obstacle.obstacle.height
+    # return False
+    return x_distance <= (this_player.player.width/2 + this_obstacle.obstacle.width/2) and this_player.player.y <= this_obstacle.obstacle.height
 
 
 def update_score():
     score_display.text = f"Score: {this_obstacle.score}"
+
 
 def handle_restart():
     if sensor.has_capability('button_1'):
         button_state = sensor.get_value('button_1')
         if button_state == 1:
             init()
+
+
+def show_endscreen():
+    game_over_display.text = f"Your final score was: {score} Press Button 1 to start again"
+    game_over_display.draw()
+
 
 @window.event
 def on_draw():
@@ -65,7 +79,7 @@ def on_draw():
         this_obstacle.game_over()
         this_player.game_over()
         handle_restart()
-        # show endscreen with final score
+        show_endscreen()
     update_score()
     handle_input()
     this_obstacle.update()
