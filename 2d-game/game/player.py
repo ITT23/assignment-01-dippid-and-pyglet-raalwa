@@ -1,3 +1,6 @@
+'''
+This module defines the player character and its behaviour
+'''
 import pyglet
 
 
@@ -29,9 +32,7 @@ class Player:
             self.acceleration = self.acceleration - 1
         else:
             if self.player.y > 0:
-                self.acceleration = -10
-                #  - 100/(self.player.y - self.starting_y)
-                print(f"Acceleration: {self.acceleration}")
+                self.acceleration = self.downward_acceleration
             else:
                 self.player.y = 0
                 self.acceleration = 0

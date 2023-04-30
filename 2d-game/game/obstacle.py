@@ -1,3 +1,6 @@
+'''
+This module defines the obstacle and its behaviour
+'''
 import pyglet
 import random
 
