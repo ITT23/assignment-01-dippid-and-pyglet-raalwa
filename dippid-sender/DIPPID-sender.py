@@ -61,6 +61,7 @@ while True:
             str(translate_button_state(pressed)) + '"}'
         sock.sendto(str(button_1).encode(), (IP, PORT))
 
+    print(accelerometer)
     sock.sendto(str(accelerometer).encode(), (IP, PORT))
 
     counter += 1

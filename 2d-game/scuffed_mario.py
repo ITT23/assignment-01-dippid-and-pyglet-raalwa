@@ -58,7 +58,7 @@ def handle_input():
     if sensor.has_capability('accelerometer'):
         acceleration_z = float(sensor.get_value('accelerometer')['z'])
         if acceleration_z > constants.JUMPING_THRESHOLD:
-            this_player.jump(int(acceleration_z*constants.MAX_ACCELERATION))
+            this_player.jump(int(acceleration_z*constants.MAX_ACCELERATION * 2))
 
 
 def check_colission():
